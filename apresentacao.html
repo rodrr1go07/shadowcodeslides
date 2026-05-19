@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow Code — Apresentação</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #07070f;
+      --surface:  #10101e;
+      --card:     #181830;
+      --border:   #2a2a4a;
+      --gold:     #f5c842;
+      --gold-dim: #8a6e1a;
+      --red:      #e03535;
+      --blue:     #4fa3e0;
+      --green:    #3ec97b;
+      --text:     #e8e8f0;
+      --muted:    #7070a0;
+      --accent:   #7c5cbf;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ───── slide container ───── */
+    #deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 72px;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity .45s ease, transform .45s ease;
+      pointer-events: none;
+      text-align: center;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+    .slide.exit {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ───── slide number badge ───── */
+    .slide-num {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      font-family: 'Space Mono', monospace;
+      font-size: .75rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* ───── background accents ───── */
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 80% 10%, rgba(124,92,191,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 10% 90%, rgba(79,163,224,.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* ───── typography ───── */
+    .label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #fff 30%, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+    h2 span { color: var(--gold); }
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    /* ───── divider ───── */
+    .divider {
+      width: 64px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      border-radius: 2px;
+      margin: 20px auto 28px;
+    }
+
+    /* ───── cards grid ───── */
+    .grid {
+      display: grid;
+      gap: 16px;
+      width: 100%;
+      max-width: 960px;
+      margin-top: 12px;
+    }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 20px;
+      text-align: left;
+    }
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .card h3 {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .card p {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ───── pill tags ───── */
+    .tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; }
+    .tag {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tag.gold  { border-color: var(--gold-dim);  color: var(--gold); }
+    .tag.blue  { border-color: #2a5a80;           color: var(--blue); }
+    .tag.green { border-color: #1a5a35;           color: var(--green); }
+    .tag.red   { border-color: #5a1a1a;           color: var(--red); }
+    .tag.purple{ border-color: #3a2a6a;           color: #b39ddb; }
+
+    /* ───── arch diagram ───── */
+    .arch {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      max-width: 880px;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .arch-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      flex: 1;
+      text-align: center;
+    }
+    .arch-box .arch-title { font-size: .7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .arch-box .arch-name  { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .arch-box .arch-sub   { font-size: .72rem; color: var(--gold); margin-top: 4px; }
+    .arch-arrow {
+      flex: 0 0 48px;
+      text-align: center;
+      font-size: 1.3rem;
+      color: var(--muted);
+      position: relative;
+    }
+    .arch-arrow span { font-size: .6rem; display: block; color: var(--gold); margin-top: 2px; letter-spacing: 1px; }
+
+    /* ───── screen mockups ───── */
+    .mockups {
+      display: flex;
+      gap: 18px;
+      max-width: 920px;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .mockup {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .mockup img {
+      flex: 1;
+      width: 100%;
+      object-fit: cover;
+      object-position: top;
+      max-height: 180px;
+      display: block;
+    }
+    .mockup-body {
+      flex: 1;
+    }
+    .mockup-bar {
+      background: #0e0e20;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .mockup-url {
+      background: var(--surface);
+      border-radius: 4px;
+      flex: 1;
+      height: 14px;
+      margin-left: 8px;
+    }
+    .mockup-body {
+      padding: 14px;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mockup-title { font-size: .65rem; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+    .mockup-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .mockup-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      width: 24px;
+      height: 18px;
+    }
+    .mockup-cell.g { background: #3a6e4a; border-color: #3ec97b33; }
+    .mockup-cell.r { background: #5a1a1a; border-color: #e0353533; }
+    .mockup-cell.n { background: #2a2a3a; }
+    .mockup-btn {
+      background: var(--gold);
+      color: #000;
+      border-radius: 5px;
+      height: 20px;
+      width: 70%;
+      margin-top: 6px;
+    }
+
+    /* ───── timeline / challenge list ───── */
+    .timeline {
+      list-style: none;
+      max-width: 840px;
+      width: 100%;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: left;
+    }
+    .timeline li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .timeline-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .timeline-content h4 { font-size: .9rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .timeline-content p  { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+    .timeline-content em { color: var(--green); font-style: normal; font-weight: 600; }
+
+    /* ───── two-column list ───── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 840px;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .list-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+    }
+    .list-block h3 { font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .list-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .list-block ul li { font-size: .82rem; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; line-height: 1.45; }
+    .list-block ul li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-weight: 700; }
+
+    /* ───── stat boxes ───── */
+    .stats { display: flex; gap: 16px; margin-top: 16px; }
+    .stat {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 16px;
+      text-align: center;
+    }
+    .stat .num { font-size: 2.2rem; font-weight: 900; color: var(--gold); font-family: 'Space Mono', monospace; }
+    .stat .desc { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+    /* ───── team badges ───── */
+    .team { display: flex; gap: 40px; justify-content: center; margin-top: 28px; }
+    .member {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-dim);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      overflow: hidden;
+      box-shadow: 0 0 18px rgba(124,92,191,.35);
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(2.0) translateY(3%);
+    }
+    .member-name { font-size: .9rem; font-weight: 600; color: var(--text); }
+
+    /* ───── navigation ───── */
+    #nav {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(16,16,30,.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 20px;
+      z-index: 100;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      transition: color .2s, background .2s;
+    }
+    .nav-btn:hover { color: var(--text); background: var(--border); }
+    #dots { display: flex; gap: 6px; }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background .25s, transform .25s;
+    }
+    .dot.active { background: var(--gold); transform: scale(1.3); }
+    #counter {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+      min-width: 38px;
+      text-align: center;
+    }
+
+    /* ───── logo mark ───── */
+    .logo-mark {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--accent), #3a1a6e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 40px rgba(124,92,191,.3);
+    }
+
+    /* ───── logo image (slides 1 e 12) ───── */
+    #s1 img, #s12 img {
+      max-height: 360px;
+      max-width: 860px;
+      width: 75%;
+      object-fit: contain;
+      margin: 8px auto 28px;
+      display: block;
+      filter: drop-shadow(0 0 24px rgba(124,92,191,.45)) drop-shadow(0 0 8px rgba(245,200,66,.2));
+    }
+
+    /* ───── overrides de tamanho para slide 1 ───── */
+    #s1 .divider {
+      width: 90px;
+      height: 4px;
+      margin: 20px auto 32px;
+    }
+    #s1 .team {
+      gap: 64px;
+      margin-top: 0;
+    }
+    #s1 .avatar {
+      width: 130px;
+      height: 130px;
+      font-size: 2.2rem;
+    }
+    #s1 .member-name {
+      font-size: 1.15rem;
+    }
+
+    /* ───── conclusion quote ───── */
+    .quote {
+      max-width: 700px;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.8;
+      border-left: 3px solid var(--gold);
+      padding-left: 24px;
+      text-align: left;
+      margin-top: 24px;
+    }
+
+
+    /* ───── slide 8 — code mockups ───── */
+    #s8 .mockup {
+      cursor: pointer;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    #s8 .mockup:hover {
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 20px rgba(245,200,66,.15);
+    }
+    .mockup-filename {
+      font-family: 'Space Mono', monospace;
+      font-size: .5rem;
+      color: var(--gold);
+      margin-left: auto;
+      padding-right: 2px;
+    }
+    .mockup-code {
+      position: relative;
+      overflow-y: auto;
+      max-height: 180px;
+      background: #07070f;
+    }
+    .mockup-code::after {
+      content: '▶  ver tela';
+      position: sticky;
+      bottom: 0;
+      display: block;
+      padding: 7px 8px 5px;
+      background: linear-gradient(transparent, rgba(7,7,15,.98));
+      font-size: .5rem;
+      color: var(--gold-dim);
+      text-align: center;
+      letter-spacing: 1.5px;
+      pointer-events: none;
+    }
+    .mockup-code pre {
+      margin: 0;
+      padding: 10px 12px 0;
+      font-family: 'Space Mono', monospace;
+      font-size: .38rem;
+      line-height: 1.65;
+      color: #8890b0;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    /* ───── lightbox ───── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox.active { display: flex; }
+    .lb-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.9);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+    #lb-img {
+      position: relative;
+      max-width: 88vw;
+      max-height: 86vh;
+      border-radius: 12px;
+      box-shadow: 0 0 80px rgba(0,0,0,.8);
+      animation: lbIn .3s ease;
+    }
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    #lb-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: #fff;
+      font-size: 1rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 501;
+      transition: background .2s;
+    }
+    #lb-close:hover { background: rgba(255,255,255,.28); }
+
+    /* ───── progress bar ───── */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      transition: width .4s ease;
+      z-index: 200;
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE — max-width: 768px
+    ═══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      html, body { overflow: hidden; }
+
+      .slide {
+        padding: 56px 18px 96px;
+        justify-content: flex-start;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .slide-num {
+        top: 14px;
+        right: 16px;
+        font-size: .65rem;
+      }
+
+      /* typography */
+      h1 { font-size: clamp(2rem, 9vw, 3.2rem); }
+      h2 { font-size: clamp(1.2rem, 5.5vw, 1.8rem); margin-bottom: 16px; }
+      .label { font-size: .6rem; letter-spacing: 3px; margin-bottom: 10px; }
+      .subtitle { font-size: .9rem; }
+
+      /* grids → coluna única */
+      .grid-2,
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid    { gap: 10px; margin-top: 8px; }
+
+      .card { padding: 14px 14px; }
+      .card-icon { font-size: 1.3rem; margin-bottom: 6px; }
+      .card h3 { font-size: .85rem; }
+      .card p  { font-size: .75rem; }
+
+      /* two-col → coluna única */
+      .two-col { grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+      .list-block { padding: 14px; }
+      .list-block h3 { font-size: .68rem; margin-bottom: 8px; }
+      .list-block ul li { font-size: .75rem; }
+
+      /* arch diagram → vertical */
+      .arch {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        margin-top: 10px;
+      }
+      .arch-arrow {
+        flex: none;
+        transform: rotate(90deg);
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .arch-arrow span { display: none; }
+      .arch-box { padding: 12px 14px; }
+      .arch-box .arch-name { font-size: .85rem; }
+      .arch-box .arch-sub  { font-size: .65rem; }
+
+      /* mockups slide 8 → 2 colunas */
+      .mockups {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .mockup { flex: 1 1 calc(50% - 5px); min-width: 0; }
+      .mockup-code { max-height: 110px; }
+
+      /* timeline */
+      .timeline { gap: 10px; margin-top: 6px; }
+      .timeline li { padding: 12px 14px; gap: 10px; }
+      .timeline-icon { font-size: 1.1rem; }
+      .timeline-content h4 { font-size: .8rem; }
+      .timeline-content p  { font-size: .72rem; }
+
+      /* stats */
+      .stats { flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+      .stat { flex: 1 1 calc(50% - 5px); padding: 14px 10px; }
+      .stat .num { font-size: 1.6rem; }
+      .stat .desc { font-size: .68rem; }
+
+      /* team / avatars */
+      .team { gap: 20px; flex-wrap: wrap; margin-top: 16px; }
+      .avatar { width: 72px; height: 72px; font-size: 1.2rem; }
+      .member-name { font-size: .8rem; }
+
+      /* slide 1 overrides */
+      #s1 .team  { gap: 28px; }
+      #s1 .avatar { width: 90px; height: 90px; font-size: 1.6rem; }
+      #s1 .member-name { font-size: .95rem; }
+      #s1 .divider { width: 64px; height: 3px; margin: 14px auto 20px; }
+
+      /* logo slides 1 e 12 */
+      #s1 img, #s12 img {
+        max-height: 180px;
+        width: 80%;
+        margin: 6px auto 16px;
+      }
+
+      /* tags */
+      .tags { gap: 6px; margin-top: 6px; }
+      .tag  { font-size: .7rem; padding: 4px 11px; }
+
+      /* quote */
+      .quote { font-size: .9rem; padding-left: 14px; margin-top: 14px; }
+
+      /* divider */
+      .divider { margin: 12px auto 16px; }
+
+      /* navigation */
+      #nav {
+        bottom: 16px;
+        padding: 8px 14px;
+        gap: 10px;
+      }
+      .nav-btn { font-size: .95rem; padding: 4px 8px; }
+      #dots { gap: 5px; }
+      .dot  { width: 6px; height: 6px; }
+      #counter { font-size: .6rem; min-width: 32px; }
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE PEQUENO — max-width: 420px
+    ═══════════════════════════════════════ */
+    @media (max-width: 420px) {
+      .slide { padding: 52px 14px 88px; }
+      h2 { font-size: clamp(1.1rem, 6vw, 1.5rem); }
+
+      /* mockups → coluna única em telas muito pequenas */
+      .mockup { flex: 1 1 100%; }
+
+      .stats { flex-direction: column; }
+      .stat  { flex: none; }
+
+      #s1 .avatar { width: 72px; height: 72px; }
+      #s1 img, #s12 img { max-height: 140px; }
+
+      .arch-box .arch-name { font-size: .78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div id="deck">
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 1 — CAPA
+  ══════════════════════════════════════════ -->
+  <section class="slide active" id="s1">
+    <div class="slide-num">01 / 12</div>
+    <div class="label" style="font-size:.9rem; letter-spacing:6px; margin-bottom:20px">Apresentação de Projeto</div>
+    <h2 style="font-size:clamp(3rem,8vw,6.5rem); margin-bottom:0">Shadow <span>Code</span></h2>
+    <div class="divider" style="width:120px; height:5px; margin:32px auto 28px"></div>
+    <p class="subtitle" style="font-size:1rem; letter-spacing:2px">Rodrigo Talisson · Dennis Chaves · André Ytalo</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 2 — PROBLEMA
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s2">
+    <div class="slide-num">02 / 12</div>
+    <div class="label">Identificação do problema</div>
+    <h2>O <span>Problema</span></h2>
+    <div class="divider"></div>
+    <div class="grid grid-3" style="max-width:860px">
+      <div class="card">
+        <span class="card-icon">🌐</span>
+        <h3>Acesso limitado</h3>
+        <p>Jogos de tabuleiro online geralmente exigem instalação, cadastro ou são pagos, dificultando o acesso rápido pelo navegador.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🇧🇷</span>
+        <h3>Barreira do idioma</h3>
+        <p>Poucas plataformas oferecem experiência nativa em português — o que afasta parte significativa do público brasileiro.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">👥</span>
+        <h3>Falta de opção gratuita</h3>
+        <p>Grupos de amigos precisam de uma plataforma gratuita e de fácil acesso para jogar juntos sem barreiras técnicas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 3 — OBJETIVO E PÚBLICO-ALVO
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s3">
+    <div class="slide-num">03 / 12</div>
+    <div class="label">Objetivo &amp; Público-alvo</div>
+    <h2>Para quem e <span>por quê?</span></h2>
+    <div class="divider"></div>
+    <div class="two-col" style="max-width:860px">
+      <div class="list-block">
+        <h3>🎯 Objetivo da solução</h3>
+        <ul>
+          <li>Criar um jogo web multiplayer 100% gratuito e sem instalação</li>
+          <li>Oferecer experiência de dedução social com impostor secreto</li>
+          <li>Suportar múltiplos idiomas para ampliar o alcance</li>
+          <li>Comunicação em tempo real via WebSockets</li>
+          <li>Interface responsiva acessível em celular e desktop</li>
+        </ul>
+      </div>
+      <div class="list-block">
+        <h3>👤 Público-alvo</h3>
+        <ul>
+          <li>Grupos de amigos que buscam entretenimento online</li>
+          <li>Estudantes e jovens entre 14 e 30 anos</li>
+          <li>Fãs de jogos de tabuleiro em versão digital</li>
+          <li>Qualquer pessoa com acesso a um navegador moderno</li>
+          <li>Comunidades internacionais (6 idiomas suportados)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 4 — FUNCIONALIDADES (PARTE 1)
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s4">
+    <div class="slide-num">04 / 12</div>
+    <div class="label">Principais Funcionalidades</div>
+    <h2>Como o jogo <span>funciona?</span></h2>
+    <div class="divider"></div>
+    <div class="grid grid-3" style="max-width:900px">
+      <div class="card">
+        <span class="card-icon">🏠</span>
+        <h3>Salas com código único</h3>
+        <p>Admin cria uma sala e compartilha o código gerado automaticamente. Outros jogadores entram com o código, sem cadastro.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎭</span>
+        <h3>Papéis: Mestre &amp; Agentes</h3>
+        <p>O Mestre dá dicas de uma palavra com um número. Os Agentes votam nas 25 cartas tentando revelar as corretas.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🃏</span>
+        <h3>Tabuleiro 5×5</h3>
+        <p>25 cartas divididas em: 10 corretas (douradas), 12 neutras e 3 assassinas. Revelar uma assassina encerra o jogo.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🕵️</span>
+        <h3>Impostor secreto</h3>
+        <p>Um agente é sorteado como impostor — ele vê as cartas assassinas e tenta sabotar a equipe discretamente.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🗳️</span>
+        <h3>Sistema de votação</h3>
+        <p>3 votos são necessários para revelar uma carta, incentivando debate e consenso entre os agentes.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">⏱️</span>
+        <h3>Timer de rodada</h3>
+        <p>O admin pode configurar um limite de tempo por rodada, aumentando a tensão e o ritmo da partida.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 5 — FUNCIONALIDADES (PARTE 2)
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s5">
+    <div class="slide-num">05 / 12</div>
+    <div class="label">Principais Funcionalidades</div>
+    <h2>Mais <span>recursos</span></h2>
+    <div class="divider"></div>
+    <div class="grid grid-3" style="max-width:900px">
+      <div class="card">
+        <span class="card-icon">🧑‍🎨</span>
+        <h3>Avatar e apelido</h3>
+        <p>Cada jogador escolhe um apelido e um avatar entre 11 opções antes de entrar na sala, personalizando sua identidade.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌍</span>
+        <h3>6 idiomas</h3>
+        <p>Interface e regras disponíveis em Português, Inglês, Espanhol, Francês, Italiano e Chinês.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">👑</span>
+        <h3>Controles do admin</h3>
+        <p>Admin pode randomizar papéis, remover jogadores, mover papéis e configurar o timer antes de iniciar a partida.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">📜</span>
+        <h3>Histórico de dicas</h3>
+        <p>Últimas 5 dicas ficam visíveis no painel lateral para que os agentes possam revisá-las durante a partida.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">📱</span>
+        <h3>Design responsivo</h3>
+        <p>Interface adaptada para mobile com drawer lateral e layout fluido, funcionando em qualquer tamanho de tela.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎵</span>
+        <h3>Música de fundo</h3>
+        <p>Trilha sonora ambiente para imersão, com botão para ativar ou silenciar diretamente na tela inicial.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 6 — TECNOLOGIAS
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s6">
+    <div class="slide-num">06 / 12</div>
+    <div class="label">Stack técnica</div>
+    <h2>Tecnologias <span>utilizadas</span></h2>
+    <div class="divider"></div>
+    <div class="two-col" style="max-width:860px">
+      <div class="list-block">
+        <h3>⚛️ Frontend</h3>
+        <ul>
+          <li><strong style="color:var(--text)">React 19</strong> — biblioteca de UI declarativa</li>
+          <li><strong style="color:var(--text)">Vite 5</strong> — bundler ultrarrápido para desenvolvimento</li>
+          <li><strong style="color:var(--text)">React Router DOM 7</strong> — roteamento client-side</li>
+          <li><strong style="color:var(--text)">Socket.IO Client</strong> — comunicação em tempo real</li>
+          <li><strong style="color:var(--text)">CSS3 puro</strong> — estilização responsiva customizada</li>
+        </ul>
+      </div>
+      <div class="list-block">
+        <h3>🖥️ Backend &amp; Banco</h3>
+        <ul>
+          <li><strong style="color:var(--text)">Node.js + Express 5</strong> — servidor HTTP e API REST</li>
+          <li><strong style="color:var(--text)">Socket.IO 4</strong> — servidor de WebSocket para eventos</li>
+          <li><strong style="color:var(--text)">Better SQLite3</strong> — banco leve com WAL para escrita concorrente</li>
+          <li><strong style="color:var(--text)">dotenv + CORS</strong> — configuração de ambiente e segurança</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tags" style="margin-top:20px">
+      <span class="tag blue">React 19</span>
+      <span class="tag blue">Vite 5</span>
+      <span class="tag gold">Node.js</span>
+      <span class="tag gold">Express 5</span>
+      <span class="tag green">Socket.IO</span>
+      <span class="tag purple">SQLite</span>
+      <span class="tag blue">React Router</span>
+      <span class="tag red">CSS3</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 7 — ARQUITETURA
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s7">
+    <div class="slide-num">07 / 12</div>
+    <div class="label">Organização do sistema</div>
+    <h2><span>Arquitetura</span> do projeto</h2>
+    <div class="divider"></div>
+    <div class="arch">
+      <div class="arch-box">
+        <div class="arch-title">Cliente</div>
+        <div class="arch-name">React + Vite</div>
+        <div class="arch-sub">Home · Lobby · Game</div>
+      </div>
+      <div class="arch-arrow">⇄<span>WebSocket</span></div>
+      <div class="arch-box">
+        <div class="arch-title">Servidor</div>
+        <div class="arch-name">Node.js + Express</div>
+        <div class="arch-sub">Socket.IO · REST API</div>
+      </div>
+      <div class="arch-arrow">⇄<span>SQL</span></div>
+      <div class="arch-box">
+        <div class="arch-title">Banco de dados</div>
+        <div class="arch-name">SQLite</div>
+        <div class="arch-sub">games · players · cards · moves</div>
+      </div>
+    </div>
+    <div class="two-col" style="max-width:860px; margin-top:20px">
+      <div class="list-block">
+        <h3>🔌 Eventos Socket (Lobby)</h3>
+        <ul>
+          <li>lobby_create → gera código da sala</li>
+          <li>lobby_join_code → jogador entra com código</li>
+          <li>lobby_choose_role → seleção de papel</li>
+          <li>lobby_start → admin inicia a partida</li>
+        </ul>
+      </div>
+      <div class="list-block">
+        <h3>🎮 Eventos Socket (Jogo)</h3>
+        <ul>
+          <li>vote_card → agente vota em uma carta</li>
+          <li>card_revealed → carta virada (broadcast)</li>
+          <li>clue_submitted → mestre envia dica</li>
+          <li>game_finished → vencedor determinado</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 8 — DEMONSTRAÇÃO DAS TELAS
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s8">
+    <div class="slide-num">08 / 12</div>
+    <div class="label">Interface &amp; Fluxo</div>
+    <h2>Demonstração das <span>telas</span></h2>
+    <div class="divider"></div>
+    <div class="mockups">
+      <div class="mockup" data-image="home.png">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#e03535"></div>
+          <div class="mockup-dot" style="background:#f5c842"></div>
+          <div class="mockup-dot" style="background:#3ec97b"></div>
+          <div class="mockup-url"></div>
+          <span class="mockup-filename">Home.jsx</span>
+        </div>
+        <div class="mockup-code"><pre id="code-home"></pre></div>
+      </div>
+      <div class="mockup" data-image="lobby.png">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#e03535"></div>
+          <div class="mockup-dot" style="background:#f5c842"></div>
+          <div class="mockup-dot" style="background:#3ec97b"></div>
+          <div class="mockup-url"></div>
+          <span class="mockup-filename">Lobby.jsx</span>
+        </div>
+        <div class="mockup-code"><pre id="code-lobby"></pre></div>
+      </div>
+      <div class="mockup" data-image="game.png">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#e03535"></div>
+          <div class="mockup-dot" style="background:#f5c842"></div>
+          <div class="mockup-dot" style="background:#3ec97b"></div>
+          <div class="mockup-url"></div>
+          <span class="mockup-filename">Game.jsx</span>
+        </div>
+        <div class="mockup-code"><pre id="code-game"></pre></div>
+      </div>
+      <div class="mockup" data-image="gameover.png">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#e03535"></div>
+          <div class="mockup-dot" style="background:#f5c842"></div>
+          <div class="mockup-dot" style="background:#3ec97b"></div>
+          <div class="mockup-url"></div>
+          <span class="mockup-filename">Game.jsx (result)</span>
+        </div>
+        <div class="mockup-code"><pre id="code-gameover"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 9 — DESAFIOS
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s9">
+    <div class="slide-num">09 / 12</div>
+    <div class="label">Obstáculos &amp; Soluções</div>
+    <h2>Desafios <span>enfrentados</span></h2>
+    <div class="divider"></div>
+    <ul class="timeline">
+      <li>
+        <div class="timeline-icon">⚡</div>
+        <div class="timeline-content">
+          <h4>Sincronização em tempo real entre múltiplos jogadores</h4>
+          <p>Garantir que votos, cartas reveladas e dicas chegassem a todos simultaneamente sem inconsistências. <em>→ Resolvido com Socket.IO e broadcast de eventos por sala.</em></p>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-icon">🗃️</div>
+        <div class="timeline-content">
+          <h4>Gerenciamento de estado entre banco e memória</h4>
+          <p>Dados de lobby precisavam de resposta imediata; dados de jogo precisavam de persistência. <em>→ Separação: lobbies em memória (Map), partidas no SQLite com WAL.</em></p>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-icon">🕵️</div>
+        <div class="timeline-content">
+          <h4>Mecânica do impostor sem revelar identidade</h4>
+          <p>O impostor precisa ver as cartas assassinas sem que os outros saibam quem ele é. <em>→ Estado do impostor enviado apenas para o socket individual do jogador sorteado.</em></p>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-icon">📱</div>
+        <div class="timeline-content">
+          <h4>Responsividade do tabuleiro em telas pequenas</h4>
+          <p>O grid 5×5 com sidebar colapsava em dispositivos móveis. <em>→ Drawer lateral com toggle e media queries para adaptar o layout ao mobile.</em></p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 10 — APRENDIZADOS
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s10">
+    <div class="slide-num">10 / 12</div>
+    <div class="label">Crescimento da equipe</div>
+    <h2>Aprendizados <span>obtidos</span></h2>
+    <div class="divider"></div>
+    <div class="grid grid-2" style="max-width:860px">
+      <div class="card">
+        <span class="card-icon">🔗</span>
+        <h3>Desenvolvimento full-stack integrado</h3>
+        <p>Aprendemos a conectar React no frontend com Node.js e Express no backend, criando uma aplicação coesa de ponta a ponta.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌐</span>
+        <h3>WebSockets e comunicação em tempo real</h3>
+        <p>Entendemos o ciclo de vida de sockets, emissão de eventos, broadcast por sala e as diferenças em relação ao modelo HTTP tradicional.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧠</span>
+        <h3>Lógica de jogos multiplayer</h3>
+        <p>Modelar estados de jogo, condições de vitória, turnos e o papel do impostor exigiu pensar em sistemas complexos com múltiplos agentes.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🤝</span>
+        <h3>Trabalho colaborativo com Git</h3>
+        <p>Gerenciar branches, resolver conflitos e dividir responsabilidades em equipe foi essencial para o andamento do projeto.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 11 — RESULTADOS E MELHORIAS
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s11">
+    <div class="slide-num">11 / 12</div>
+    <div class="label">Resultados &amp; Próximos Passos</div>
+    <h2>O que <span>alcançamos</span> e o que vem a seguir</h2>
+    <div class="divider"></div>
+    <div class="stats">
+      <div class="stat"><div class="num">25</div><div class="desc">cartas por partida</div></div>
+      <div class="stat"><div class="num">10</div><div class="desc">jogadores simultâneos</div></div>
+      <div class="stat"><div class="num">6</div><div class="desc">idiomas suportados</div></div>
+      <div class="stat"><div class="num">3</div><div class="desc">telas completas</div></div>
+    </div>
+    <div class="two-col" style="max-width:860px; margin-top:16px">
+      <div class="list-block">
+        <h3>✅ Resultados obtidos</h3>
+        <ul>
+          <li>Jogo funcional com todas as mecânicas implementadas</li>
+          <li>Comunicação em tempo real estável entre jogadores</li>
+          <li>Interface responsiva para mobile e desktop</li>
+          <li>Impostor aleatório e timer de rodada configurável</li>
+        </ul>
+      </div>
+      <div class="list-block">
+        <h3>🚀 Melhorias futuras</h3>
+        <ul>
+          <li>Sistema de contas e histórico de partidas</li>
+             <li>Mudança no sistema de indicar um voto e de virar a carta</li>
+          <li>Ranking global e pontuação por temporada</li>
+          <li>Novos temas de cartas e modos de jogo</li>
+          <li>Chat de voz integrado durante a partida</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 12 — CONCLUSÃO
+  ══════════════════════════════════════════ -->
+  <section class="slide" id="s12">
+    <div class="slide-num">12 / 12</div>
+    <div class="label">Conclusão</div>
+    <img src="logo.png" alt="Shadow Code" />
+    <div class="divider"></div>
+    <blockquote class="quote">
+      "O Shadow Code prova que é possível construir, do zero, uma experiência de jogo multiplayer rica e envolvente usando tecnologias web modernas. Mais do que um projeto acadêmico, é um produto funcional que une diversão, estratégia e colaboração."
+    </blockquote>
+    <div class="tags" style="margin-top:28px">
+      <span class="tag gold">React + Node.js</span>
+      <span class="tag green">Tempo real</span>
+      <span class="tag blue">Multiplayer</span>
+      <span class="tag purple">Dedução social</span>
+      <span class="tag red">Impostor</span>
+    </div>
+    <p class="subtitle" style="margin-top:24px; font-size:.9rem">
+      Rodrigo Talisson · Dennis Chaves · André Ytalo
+    </p>
+  </section>
+
+</div>
+
+<!-- ══════════ CODE SOURCES (slide 8) ══════════ -->
+<script type="text/plain" id="src-home">
+import "./Home.css";
+import logo from "../assets/logoShadowCode.png";
+import icone1 from "../assets/icone1.png";
+import icone2 from "../assets/icone2.png";
+import icone3 from "../assets/icone3.png";
+import icone4 from "../assets/icone4.png";
+import icone5 from "../assets/icone5.png";
+import icone6 from "../assets/icone6.png";
+import icone7 from "../assets/icone7.png";
+import icone8 from "../assets/icone8.png";
+import icone9 from "../assets/icone9.png";
+import icone10 from "../assets/icone10.png";
+import icone11 from "../assets/icone11.png";
+import {
+  FaPlay, FaMusic, FaVolumeUp, FaVolumeMute,
+  FaPuzzlePiece, FaBolt, FaCode, FaUser, FaKey, FaArrowRight,
+} from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useMusic } from "../contexts/MusicContext";
+
+const avatarOptions = [
+  icone1, icone2, icone3, icone10,
+  icone4, icone5, icone6, icone7,
+  icone8, icone9, icone11,
+];
+
+export default function Home() {
+  const navigate = useNavigate();
+  const { t, toggleLanguage } = useLanguage();
+  const { musicOn, toggleMusic } = useMusic();
+
+  const [avatarUrl, setAvatarUrl] = useState(icone1);
+  const [showSelector, setShowSelector] = useState(false);
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [nick, setNick] = useState("");
+
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem("selectedAvatar");
+    if (savedAvatar) setAvatarUrl(savedAvatar);
+  }, []);
+
+  const saveAvatar = (url) => {
+    setAvatarUrl(url);
+    localStorage.setItem("selectedAvatar", url);
+  };
+
+  const handlePlay = () => {
+    localStorage.setItem('userRole', 'admin');
+    localStorage.setItem('nick', nick.trim() || t.defaultNick);
+    navigate("/lobby");
+  };
+
+  const handleEnterCode = () => {
+    if (!codeInput.trim()) return;
+    localStorage.setItem('userRole', 'player');
+    localStorage.setItem('nick', nick.trim() || t.defaultNick);
+    navigate(`/lobby?code=${codeInput.trim()}`);
+  };
+
+  return (
+    <div className="container">
+      <div className="music-controls">
+        <button className="ctrl-btn" onClick={toggleMusic}><FaMusic /></button>
+        <button className="ctrl-btn" onClick={toggleMusic}>
+          {musicOn ? <FaVolumeUp /> : <FaVolumeMute />}
+        </button>
+      </div>
+      <button className="language" onClick={toggleLanguage}>{t.languageCode}</button>
+      <div className="header">
+        <img src={logo} alt="Shadow Code" className="header-logo" />
+      </div>
+      <div className="main">
+        <div className="content">
+          <div className="card">
+            <div className="avatar">
+              <div className="avatar-ring">
+                <img src={avatarUrl} alt="avatar" />
+              </div>
+              <div className="edit-icon" onClick={() => setShowSelector(true)}>
+                <MdEdit />
+              </div>
+            </div>
+            <div className="input-group">
+              <div className="input-wrapper">
+                <FaUser className="input-icon" />
+                <input type="text" placeholder={t.nickPlaceholder}
+                  className="nick-input" value={nick}
+                  onChange={(e) => setNick(e.target.value)} />
+              </div>
+            </div>
+            <button className="play" onClick={handlePlay}>
+              <FaPlay /> {t.play}
+            </button>
+            <button className="enter-code" onClick={() => setShowCodeModal(true)}>
+              <FaKey /> {t.enterCode}
+            </button>
+          </div>
+          <div className="card info-card">
+            <h3>{t.howItWorks}</h3>
+            <div className="info-item"><span><FaCode /></span><p>{t.secretCode}</p></div>
+            <div className="info-item"><span><FaPuzzlePiece /></span><p>{t.solveChallenges}</p></div>
+            <div className="info-item"><span><FaBolt /></span><p>{t.fastestWins}</p></div>
+          </div>
+        </div>
+      </div>
+      {showCodeModal && (
+        <div className="modal-overlay" onClick={() => { setShowCodeModal(false); setCodeInput(""); }}>
+          <div className="modal-box code-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{t.enterCodeTitle}</h3>
+            <div className="input-wrapper" style={{ margin: "1rem 0" }}>
+              <FaKey className="input-icon" />
+              <input type="text" className="nick-input" placeholder={t.codePlaceholder}
+                value={codeInput} onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                maxLength={10} autoFocus onKeyDown={(e) => e.key === "Enter" && handleEnterCode()} />
+            </div>
+            <div className="modal-actions">
+              <button className="modal-cancel" onClick={() => { setShowCodeModal(false); setCodeInput(""); }}>
+                {t.cancel}
+              </button>
+              <button className="modal-confirm" onClick={handleEnterCode}>
+                {t.enter} <FaArrowRight />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showSelector && (
+        <div className="modal-overlay" onClick={() => setShowSelector(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <h3>{t.chooseAvatar}</h3>
+            <div className="avatar-grid">
+              {avatarOptions.map((url, index) => (
+                <img key={index} src={url} alt={`${t.avatarAlt} ${index + 1}`}
+                  className="avatar-option"
+                  onClick={() => { saveAvatar(url); setShowSelector(false); }} />
+              ))}
+            </div>
+            <button className="modal-close" onClick={() => setShowSelector(false)}>
+              {t.close}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</script>
+
+<script type="text/plain" id="src-lobby">
+import "./Lobby.css";
+import logo from "../assets/logoShadowCode.png";
+import {
+  FaBookmark, FaCog, FaCrown, FaUsers, FaLink, FaCopy,
+  FaPlay, FaRandom, FaSync, FaUserFriends, FaSignInAlt, FaUser, FaStopwatch,
+  FaVolumeUp, FaVolumeMute,
+} from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { io } from "socket.io-client";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useMusic } from "../contexts/MusicContext";
+
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+export default function Lobby() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useLanguage();
+  const { musicOn, toggleMusic } = useMusic();
+
+  const nick      = localStorage.getItem('nick')           || 'Jogador';
+  const avatarUrl = localStorage.getItem('selectedAvatar') || '';
+  const isAdmin   = localStorage.getItem('userRole') === 'admin';
+
+  const searchParams = new URLSearchParams(location.search);
+  const codeParam    = searchParams.get('code');
+
+  const [gameCode,   setGameCode]   = useState(codeParam || '---');
+  const [players,    setPlayers]    = useState([]);
+  const [copied,     setCopied]     = useState(false);
+  const [roundTime,  setRoundTime]  = useState(null);
+  const [timerInput, setTimerInput] = useState('');
+  const socketRef   = useRef(null);
+  const gameCodeRef = useRef(codeParam || '');
+
+  useEffect(() => {
+    sessionStorage.removeItem('isImpostor');
+    const socket = io(SOCKET_URL);
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      if (isAdmin && !codeParam)
+        socket.emit('lobby_create', { nick, avatar: avatarUrl });
+      else if (isAdmin && codeParam)
+        socket.emit('lobby_reclaim_admin', { code: codeParam, nick, avatar: avatarUrl });
+      else
+        socket.emit('lobby_join_code', { code: codeParam, nick, avatar: avatarUrl });
+    });
+
+    socket.on('lobby_created', ({ code }) => { setGameCode(code); gameCodeRef.current = code; });
+    socket.on('lobby_update',  setPlayers);
+    socket.on('lobby_error',   ({ message }) => { alert(message); navigate('/'); });
+    socket.on('lobby_kicked',  () => { alert(t.kicked); navigate('/'); });
+    socket.on('game_ready', ({ gameId, avatars, isImpostor }) => {
+      localStorage.setItem(`avatars_${gameId}`, JSON.stringify(avatars));
+      localStorage.setItem('lastLobbyCode', gameCodeRef.current);
+      localStorage.setItem(`isImpostor_${gameId}`, isImpostor ? 'true' : 'false');
+      navigate(`/game?gameId=${gameId}`);
+    });
+    socket.on('game_start_error', ({ message }) => alert(message));
+    socket.on('lobby_timer_update', ({ seconds }) => {
+      setRoundTime(seconds || null);
+      if (seconds) setTimerInput(String(seconds));
+    });
+    return () => socket.disconnect();
+  }, []);
+
+  const myId     = socketRef.current?.id;
+  const myPlayer = players.find(p => p.socketId === myId);
+  const myRole   = myPlayer?.gameRole;
+  const master   = players.find(p => p.gameRole === 'master');
+  const agents   = players.filter(p => p.gameRole === 'agent');
+
+  const emit = (event, data) => socketRef.current?.emit(event, data);
+  const chooseRole = (gameRole) => { localStorage.setItem('gameRole', gameRole); emit('lobby_choose_role', { code: gameCode, gameRole }); };
+  const handleExitToHome = () => { localStorage.removeItem('gameRole'); emit('lobby_leave', { code: gameCode }); navigate('/'); };
+  const handleSetTimer   = () => { const s = parseInt(timerInput, 10); if (!s || s < 5) return; emit('lobby_set_timer', { code: gameCode, seconds: s }); };
+  const handleClearTimer = () => { emit('lobby_set_timer', { code: gameCode, seconds: null }); setTimerInput(''); };
+  const handleCopy = () => { navigator.clipboard.writeText(gameCode).catch(() => {}); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+
+  return (
+    <div className="lobby-page">
+      <nav className="lobby-nav">
+        <div className="nav-left">
+          <button className="nav-player-badge">
+            <FaUserFriends />
+            <span className="badge-name">{nick}</span>
+            <span className="badge-count">{players.length}</span>
+          </button>
+        </div>
+        <div className="nav-center">
+          <img src={logo} alt="Shadow Code" className="nav-logo" onClick={handleExitToHome} style={{ cursor: 'pointer' }} />
+        </div>
+        <div className="nav-right">
+          <button className="nav-btn"><FaBookmark /> {t.rules}</button>
+          <button className="nav-btn"><FaCog /> {t.settings}</button>
+          <button className="ctrl-btn" onClick={toggleMusic}>
+            {musicOn ? <FaVolumeUp /> : <FaVolumeMute />}
+          </button>
+        </div>
+      </nav>
+      <div className="lobby-main">
+        <div className="mestre-card">
+          <h3 className="section-title">{t.master}</h3>
+          <div className="mestre-crown"><FaCrown /></div>
+          <div className="mestre-avatar-wrap">
+            {master ? (
+              <>
+                <div className="lobby-avatar-ring"><img src={master.avatar} alt={master.nick} /></div>
+                {isAdmin && master.socketId !== myId && (
+                  <div className="master-admin-actions">
+                    <button className="admin-action-btn kick-btn" onClick={() => emit('lobby_kick', { code: gameCode, targetSocketId: master.socketId })}>{t.kickBtn}</button>
+                    <button className="admin-action-btn move-btn" onClick={() => emit('lobby_move_role', { code: gameCode, targetSocketId: master.socketId, newRole: 'agent' })}>{t.moveToAgents}</button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="lobby-avatar-ring empty-ring"><FaUser /></div>
+            )}
+          </div>
+          <p className="mestre-name">{master ? master.nick : '—'}</p>
+          {myRole === 'master' ? (
+            <button className="lobby-leave-btn" onClick={() => emit('lobby_leave', { code: gameCode })}>{t.leave}</button>
+          ) : !myPlayer && (
+            <button className="mestre-enter-btn" onClick={() => chooseRole('master')} disabled={!!master}>
+              {master ? t.occupied : t.joinRole}
+            </button>
+          )}
+        </div>
+        <div className="agentes-card">
+          <h3 className="section-title">{t.agents}</h3>
+          <div className="invite-bar">
+            <FaLink className="invite-icon" />
+            <span className="invite-text">{gameCode}</span>
+            <button className="invite-copy" onClick={handleCopy}>{copied ? '✓' : <FaCopy />}</button>
+          </div>
+          {isAdmin && (
+            <>
+              <div className="agentes-actions">
+                <button className="agentes-action-btn" onClick={() => emit('lobby_randomize', { code: gameCode })}><FaRandom /> {t.randomizeAgents}</button>
+                <button className="agentes-action-btn" onClick={() => emit('lobby_reset', { code: gameCode })}><FaSync /> {t.resetAgents}</button>
+              </div>
+              <div className="timer-control">
+                <span className="timer-control-label"><FaStopwatch /> {t.timePerRound}</span>
+                <div className="timer-input-row">
+                  <input type="number" className="timer-input" min="5" max="600"
+                    value={timerInput} onChange={e => setTimerInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSetTimer()} />
+                  <button className="timer-set-btn" onClick={handleSetTimer}>{roundTime ? t.changeTimer : t.setTimer}</button>
+                  {roundTime && <button className="timer-clear-btn" onClick={handleClearTimer}>x</button>}
+                </div>
+              </div>
+            </>
+          )}
+          {myRole === 'agent' ? (
+            <button className="lobby-leave-btn" onClick={() => emit('lobby_leave', { code: gameCode })}>{t.leave}</button>
+          ) : !myPlayer && (
+            <button className="agentes-enter-btn" onClick={() => chooseRole('agent')}><FaSignInAlt /> {t.joinRole}</button>
+          )}
+        </div>
+      </div>
+      {isAdmin && (
+        <div className="lobby-footer">
+          <button className="start-btn" onClick={() => emit('lobby_start', { code: gameCode })}><FaPlay /> {t.startGame}</button>
+        </div>
+      )}
+    </div>
+  );
+}
+</script>
+
+<script type="text/plain" id="src-game">
+import "./Game.css";
+import cartaBege    from "../assets/cartas/cartaBege.png";
+import cartaDourada from "../assets/cartas/cartaDourada.png";
+import cartaPreta   from "../assets/cartas/cartaPreta.png";
+import { FaCommentDots, FaPaperPlane, FaPlus, FaBars, FaChevronLeft, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { io } from "socket.io-client";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useMusic } from "../contexts/MusicContext";
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const CARD_IMG = { neutral: cartaBege, correct: cartaDourada, assassin: cartaPreta };
+
+export default function Game() {
+  const navigate       = useNavigate();
+  const [searchParams] = useSearchParams();
+  const gameId         = searchParams.get('gameId');
+  const { t }          = useLanguage();
+  const { musicOn, toggleMusic } = useMusic();
+  const socketRef      = useRef(null);
+
+  const isMaster  = localStorage.getItem('gameRole') === 'master';
+  const isAdmin   = localStorage.getItem('userRole') === 'admin';
+  const isImpostor = localStorage.getItem(`isImpostor_${gameId}`) === 'true';
+
+  const [cards,    setCards]    = useState([]);
+  const [players,  setPlayers]  = useState([]);
+  const [clues,    setClues]    = useState([]);
+  const [activeClue,  setActiveClue]  = useState(null);
+  const [clueWord,    setClueWord]    = useState('');
+  const [clueNumber,  setClueNumber]  = useState(1);
+  const [loading,     setLoading]     = useState(true);
+  const [gameOver,    setGameOver]    = useState(null);
+  const [showResult,  setShowResult]  = useState(false);
+  const [showPlayersPanel, setShowPlayersPanel] = useState(false);
+  const [phase,       setPhase]       = useState('clue');
+  const [votedCards,  setVotedCards]  = useState(new Set());
+  const [roundTimeLeft,     setRoundTimeLeft]     = useState(null);
+  const [roundTimeDuration, setRoundTimeDuration] = useState(null);
+  const countdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!gameId) { navigate('/'); return; }
+    fetch(`${API_URL}/game/state?game_id=${gameId}`)
+      .then(r => r.json())
+      .then(({ cards: c, players: p, clues: cl, game }) => {
+        setCards(c.map(card => ({ ...card, votes: 0 })));
+        const stored    = JSON.parse(localStorage.getItem(`avatars_${gameId}`) || '[]');
+        const avatarMap = Object.fromEntries(stored.map(a => [a.nick, a.avatar]));
+        setPlayers(p.map(player => ({ ...player, avatar: avatarMap[player.name] || '' })));
+        setClues(cl);
+        if (cl.length > 0) { setActiveClue(cl[cl.length - 1]); setPhase(game.phase === 'guess' ? 'guess' : 'clue'); }
+        if (game.status === 'finished') { setGameOver({ winner: game.winner }); setShowResult(true); }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+
+    const socket = io(API_URL);
+    socketRef.current = socket;
+    socket.on('connect', () => socket.emit('join_room', gameId));
+    socket.on('votes_update',  ({ cardId, votes }) => setCards(prev => prev.map(c => c.id === cardId ? { ...c, votes } : c)));
+    socket.on('card_revealed', ({ cardId, type })  => setCards(prev => prev.map(c => c.id === cardId ? { ...c, revealed: true, type, votes: 0 } : c)));
+    socket.on('clue_submitted', (clue) => { setClues(prev => [...prev, clue]); setActiveClue(clue); setPhase('guess'); });
+    socket.on('round_timer', ({ duration }) => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      setRoundTimeDuration(duration); setRoundTimeLeft(duration);
+      countdownRef.current = setInterval(() => {
+        setRoundTimeLeft(prev => {
+          if (prev === null || prev <= 1) { clearInterval(countdownRef.current); return null; }
+          return prev - 1;
+        });
+      }, 1000);
+    });
+    socket.on('round_end', () => {
+      setPhase('clue'); setActiveClue(null);
+      setCards(prev => prev.map(c => ({ ...c, votes: 0 })));
+      setVotedCards(new Set());
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      setRoundTimeLeft(null); setRoundTimeDuration(null);
+    });
+    socket.on('game_finished', ({ winner, lobbyCode }) => {
+      setGameOver({ winner, lobbyCode }); setShowResult(true);
+      setCards(prev => prev.map(c => ({ ...c, revealed: true })));
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      setRoundTimeLeft(null);
+    });
+    socket.on('return_to_lobby', ({ lobbyCode: code }) => navigate(code ? `/lobby?code=${code}` : '/'));
+    return () => { socket.disconnect(); if (countdownRef.current) clearInterval(countdownRef.current); };
+  }, [gameId]);
+
+  const handleVote = (card) => {
+    if (card.revealed || !socketRef.current) return;
+    if (card.votes >= 3) socketRef.current.emit('flip_card', { gameId, cardId: card.id });
+    else if (!isMaster && phase === 'guess' && !votedCards.has(card.id)) {
+      socketRef.current.emit('vote_card', { gameId, cardId: card.id });
+      setVotedCards(prev => new Set([...prev, card.id]));
+    }
+  };
+
+  const handleSendClue = async () => {
+    const word = clueWord.trim();
+    if (!word || word.includes(' ')) return;
+    await fetch(`${API_URL}/game/clue`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ game_id: gameId, word, number: clueNumber }),
+    });
+    setActiveClue({ word, number: clueNumber }); setClueWord(''); setClueNumber(1);
+  };
+
+  const master    = players.find(p => p.role === 'master');
+  const agents    = players.filter(p => p.role === 'agent');
+  const remaining = cards.filter(c => c.type === 'correct' && !c.revealed).length;
+
+  if (loading) return <div className="game-page">{t.loading}</div>;
+
+  return (
+    <div className={`game-page${gameOver ? ' game-ended' : ''}`}>
+      <div className="game-title-row">
+        <h1 className="game-title">
+          {isMaster ? t.giveClueMaster : isImpostor ? t.youAreImpostor : t.youAreAgent}
+        </h1>
+        <button className="ctrl-btn" onClick={toggleMusic}>
+          {musicOn ? <FaVolumeUp /> : <FaVolumeMute />}
+        </button>
+      </div>
+      <div className="game-body">
+        <aside className="panel-master">
+          <span className="panel-label">{t.masterLabel}</span>
+          {master && <><div className="master-ring"><img src={master.avatar} alt={master.name} /></div><p className="master-name">{master.name}</p></>}
+        </aside>
+        <div className="game-center">
+          {roundTimeLeft !== null && (
+            <div className={`round-timer-bar${roundTimeLeft <= 10 ? ' urgent' : ''}`}>
+              <div className="round-timer-fill" style={{ width: `${(roundTimeLeft / (roundTimeDuration || roundTimeLeft)) * 100}%` }} />
+              <span className="round-timer-label">Timer {roundTimeLeft}s</span>
+            </div>
+          )}
+          <div className="card-grid">
+            {cards.map(card => (
+              <div key={card.id} className={`game-card${card.revealed ? ' revealed' : ''}`} onClick={() => handleVote(card)}>
+                <img src={isMaster || card.revealed ? CARD_IMG[card.type] : isImpostor && card.type === 'assassin' ? CARD_IMG['assassin'] : cartaBege} alt={card.word} className="card-img" />
+                {!card.revealed && card.votes > 0 && <div className="card-votes"><span>{card.votes}</span></div>}
+                <span className="card-word">{card.word}</span>
+              </div>
+            ))}
+          </div>
+          {!gameOver && isMaster && (activeClue ? (
+            <div className="clue-display">
+              <span>{activeClue.word}</span><span>{activeClue.number}</span>
+              <button onClick={() => setActiveClue(null)}><FaPlus /></button>
+            </div>
+          ) : (
+            <div className="clue-bar">
+              <FaCommentDots />
+              <input className="clue-input" type="text" placeholder={t.cluePlaceholder}
+                value={clueWord} onChange={e => setClueWord(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSendClue()} autoFocus />
+              <div className="clue-number">
+                <button onClick={() => setClueNumber(n => Math.max(1, n - 1))}>-</button>
+                <span>{clueNumber}</span>
+                <button onClick={() => setClueNumber(n => Math.min(9, n + 1))}>+</button>
+              </div>
+              <button className="clue-send" onClick={handleSendClue}><FaPaperPlane /></button>
+            </div>
+          ))}
+          {gameOver && isAdmin && (
+            <button className="return-lobby-btn" onClick={() => socketRef.current?.emit('lobby_return', { gameId, lobbyCode: gameOver.lobbyCode })}>
+              <FaChevronLeft /> {t.returnToLobby}
+            </button>
+          )}
+        </div>
+        <aside className="panel-sidebar">
+          <div className="sidebar-agents">
+            <span className="panel-label">{t.agentsLabel}</span>
+            {agents.map(agent => (
+              <div className="sidebar-agent" key={agent.id}>
+                <div className="agent-ring"><img src={agent.avatar} alt={agent.name} /></div>
+                <span className="agent-name">{agent.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="sidebar-log">
+            <span className="panel-label">{t.roundLog}</span>
+            {Array.from({ length: 5 }, (_, i) => {
+              const clue = clues[i];
+              return <div className="log-row" key={i}><span className="log-num">{i+1}</span><span className={`log-dot${clue ? ' used' : ''}`} />{clue && <span className="log-clue">{clue.word} <b>{clue.number}</b></span>}</div>;
+            })}
+          </div>
+          <div className="remaining-count">
+            <span>{t.remaining}</span><span className="remaining-num">{remaining}</span>
+          </div>
+        </aside>
+      </div>
+      {gameOver && showResult && (
+        <div className="result-overlay">
+          <div className={`result-card${gameOver.winner === 'agents' ? ' agents' : ''}`}>
+            <button className="result-close-btn" onClick={() => setShowResult(false)}>x</button>
+            <span>{t.gameOver}</span>
+            <p>{gameOver.winner === 'impostor' ? t.impostorWon : t.agentsWon}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</script>
+
+<script type="text/plain" id="src-gameover">
+// Game.jsx — Game Over (estado, evento socket e modal de resultado)
+
+// ── Estado ──────────────────────────────────────────
+const [gameOver,   setGameOver]   = useState(null);
+const [showResult, setShowResult] = useState(false);
+
+// ── Socket: fim de jogo ──────────────────────────────
+socket.on('game_finished', ({ winner, lobbyCode }) => {
+  const code = lobbyCode || localStorage.getItem('lastLobbyCode');
+  if (lobbyCode) localStorage.setItem('lastLobbyCode', lobbyCode);
+
+  setGameOver({ winner, lobbyCode: code });
+  setShowResult(true);
+
+  // Revela todas as cartas ao terminar
+  setCards(prev => prev.map(c => ({ ...c, revealed: true })));
+
+  if (countdownRef.current) {
+    clearInterval(countdownRef.current);
+    countdownRef.current = null;
+  }
+  setRoundTimeLeft(null);
+  setRoundTimeDuration(null);
+});
+
+// ── Voltar ao lobby (admin) ──────────────────────────
+const handleReturnToLobby = () => {
+  if (!socketRef.current) return;
+  const lobbyCode = gameOver?.lobbyCode
+    || localStorage.getItem('lastLobbyCode');
+  socketRef.current.emit('lobby_return', { gameId, lobbyCode });
+};
+
+// ── JSX: modal de resultado ──────────────────────────
+{gameOver && showResult && (
+  <div className="result-overlay">
+    <div className={
+      `result-card${gameOver.winner === 'agents' ? ' agents' : ''}`
+    }>
+      <button
+        className="result-close-btn"
+        onClick={() => setShowResult(false)}
+      >
+        ✕
+      </button>
+
+      <span className="result-label">{t.gameOver}</span>
+
+      <p className={
+        `result-title${gameOver.winner === 'agents' ? ' agents' : ''}`
+      }>
+        {gameOver.winner === 'impostor'
+          ? t.impostorWon
+          : t.agentsWon}
+      </p>
+    </div>
+  </div>
+)}
+
+// ── JSX: botão de retorno ao lobby (admin, in-game) ──
+{gameOver && isAdmin && (
+  <button
+    className="return-lobby-btn"
+    onClick={handleReturnToLobby}
+  >
+    <FaChevronLeft /> {t.returnToLobby}
+  </button>
+)}
+</script>
+
+<!-- ══════════ LIGHTBOX ══════════ -->
+<div id="lightbox">
+  <div class="lb-backdrop"></div>
+  <img id="lb-img" src="" alt="Screenshot" />
+  <button id="lb-close" title="Fechar">✕</button>
+</div>
+
+<!-- ══════════ NAVIGATION ══════════ -->
+<nav id="nav">
+  <button class="nav-btn" id="btnPrev" title="Anterior">&#8592;</button>
+  <div id="dots"></div>
+  <span id="counter">1 / 12</span>
+  <button class="nav-btn" id="btnNext" title="Próximo">&#8594;</button>
+</nav>
+
+<script>
+  const TOTAL = 12;
+  let current = 1;
+
+  const slides  = Array.from({ length: TOTAL }, (_, i) => document.getElementById(`s${i + 1}`));
+  const dots    = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+
+  // build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i + 1));
+    dots.appendChild(d);
+  });
+
+  function goTo(n, dir = 1) {
+    if (n < 1 || n > TOTAL || n === current) return;
+    const prev = slides[current - 1];
+    prev.classList.remove('active');
+    prev.classList.add('exit');
+    setTimeout(() => prev.classList.remove('exit'), 500);
+
+    current = n;
+    slides[current - 1].classList.add('active');
+
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current - 1));
+    counter.textContent = `${current} / ${TOTAL}`;
+    progress.style.width = `${(current / TOTAL) * 100}%`;
+  }
+
+  document.getElementById('btnPrev').addEventListener('click', () => goTo(current - 1, -1));
+  document.getElementById('btnNext').addEventListener('click', () => goTo(current + 1,  1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  goTo(current + 1,  1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    goTo(current - 1, -1);
+  });
+
+  // touch swipe
+  let touchX = null;
+  document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+    touchX = null;
+  });
+
+  // init progress
+  progress.style.width = `${(1 / TOTAL) * 100}%`;
+
+  // slide 8 — injetar código nos pre elements
+  ['home','lobby','game','gameover'].forEach(id => {
+    const src = document.getElementById('src-' + id);
+    const pre = document.getElementById('code-' + id);
+    if (src && pre) pre.textContent = src.textContent.trim();
+  });
+
+  // lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lb-img');
+  const openLb   = src => { lbImg.src = src; lightbox.classList.add('active'); };
+  const closeLb  = ()  => lightbox.classList.remove('active');
+  document.querySelectorAll('#s8 .mockup[data-image]').forEach(m =>
+    m.addEventListener('click', () => openLb(m.dataset.image))
+  );
+  document.querySelector('.lb-backdrop').addEventListener('click', closeLb);
+  document.getElementById('lb-close').addEventListener('click', closeLb);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+</script>
+</body>
+</html>
