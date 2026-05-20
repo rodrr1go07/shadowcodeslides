@@ -1087,7 +1087,7 @@
   </section>
 
   <!-- ══════════════════════════════════════════
-       SLIDE 12 — CONCLUSÃO
+       SLIDE 11 — CONCLUSÃO
   ══════════════════════════════════════════ -->
   <section class="slide" id="s11">
     <div class="slide-num">11 / 12</div>
@@ -1114,17 +1114,46 @@
   ══════════════════════════════════════════ -->
   <section class="slide" id="s12">
     <div class="slide-num">12 / 12</div>
-    <div class="label">Acesse o jogo</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:64px;max-width:800px;width:100%">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:20px">
-        <img src="logo.png" alt="Shadow Code" style="max-width:300px;width:85%;object-fit:contain;filter:drop-shadow(0 0 24px rgba(124,92,191,.45)) drop-shadow(0 0 8px rgba(245,200,66,.2))" />
-        <p class="subtitle" style="font-size:.95rem;letter-spacing:2px">shadowcode.tech</p>
+    <div class="label" style="font-size:.85rem;letter-spacing:5px;margin-bottom:22px">Acesse o jogo</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:80px;max-width:960px;width:100%">
+
+      <!-- logo -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:28px">
+        <img src="logo.png" alt="Shadow Code"
+             style="max-width:400px;width:90%;object-fit:contain;
+                    filter:drop-shadow(0 0 36px rgba(124,92,191,.6)) drop-shadow(0 0 14px rgba(245,200,66,.3))" />
+        <p style="font-family:'Space Mono',monospace;font-size:1.2rem;
+                  color:var(--gold);letter-spacing:3px;margin:0">shadowcode.tech</p>
       </div>
-      <div style="width:2px;height:260px;background:linear-gradient(180deg,transparent,var(--gold),transparent);flex-shrink:0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:18px">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://shadowcode.tech&size=200x200&bgcolor=07070f&color=f5c842&margin=12" alt="QR Code shadowcode.tech" style="border-radius:12px;width:190px;height:190px;border:1px solid var(--border)" />
-        <span class="label" style="margin:0">Escaneie para jogar</span>
+
+      <!-- divisor -->
+      <div style="width:2px;height:340px;flex-shrink:0;
+                  background:linear-gradient(180deg,transparent,var(--gold) 30%,var(--gold) 70%,transparent)"></div>
+
+      <!-- QR code -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:24px">
+        <div style="position:relative;padding:22px;background:var(--card);border-radius:22px;
+                    border:1px solid var(--gold-dim);
+                    box-shadow:0 0 0 1px rgba(245,200,66,.08),
+                               0 0 40px rgba(245,200,66,.22),
+                               0 0 80px rgba(124,92,191,.18),
+                               inset 0 0 24px rgba(245,200,66,.04)">
+          <!-- cantos decorativos -->
+          <div style="position:absolute;top:10px;left:10px;width:18px;height:18px;
+                      border-top:2px solid var(--gold);border-left:2px solid var(--gold);border-radius:4px 0 0 0"></div>
+          <div style="position:absolute;top:10px;right:10px;width:18px;height:18px;
+                      border-top:2px solid var(--gold);border-right:2px solid var(--gold);border-radius:0 4px 0 0"></div>
+          <div style="position:absolute;bottom:10px;left:10px;width:18px;height:18px;
+                      border-bottom:2px solid var(--gold);border-left:2px solid var(--gold);border-radius:0 0 0 4px"></div>
+          <div style="position:absolute;bottom:10px;right:10px;width:18px;height:18px;
+                      border-bottom:2px solid var(--gold);border-right:2px solid var(--gold);border-radius:0 0 4px 0"></div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://shadowcode.tech&size=260x260&bgcolor=181830&color=f5c842&margin=6"
+               alt="QR Code shadowcode.tech"
+               style="display:block;border-radius:10px;width:240px;height:240px" />
+        </div>
+        <span class="label" style="margin:0;font-size:.78rem;letter-spacing:4px">Escaneie para jogar</span>
       </div>
+
     </div>
   </section>
 
