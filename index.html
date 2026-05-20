@@ -724,6 +724,27 @@
       #dots { gap: 5px; }
       .dot  { width: 6px; height: 6px; }
       #counter { font-size: .6rem; min-width: 32px; }
+
+      /* slide 12 — empilhar verticalmente em mobile */
+      #s12 > div {
+        flex-direction: column !important;
+        gap: 28px !important;
+        align-items: center !important;
+      }
+      /* logo menor */
+      #s12 > div > div:nth-child(1) img {
+        max-width: 200px !important;
+        width: 65% !important;
+      }
+      /* divisor vertical → horizontal */
+      #s12 > div > div:nth-child(2) {
+        width: 60% !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent) !important;
+      }
+      /* QR card menor */
+      .qr-inner { padding: 14px 14px 10px !important; gap: 10px !important; }
+      .qr-inner img { width: 130px !important; height: 130px !important; }
     }
 
     /* ═══════════════════════════════════════
@@ -740,7 +761,8 @@
       .stat  { flex: none; }
 
       #s1 .avatar { width: 72px; height: 72px; }
-      #s1 img, #s12 img { max-height: 140px; }
+      #s1 img, #s11 img { max-height: 140px; }
+      .qr-inner img { width: 110px !important; height: 110px !important; }
 
       .arch-box .arch-name { font-size: .78rem; }
     }
